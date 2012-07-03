@@ -10,32 +10,59 @@ namespace MonoDroid.ColorPickers
     [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@drawable/icon")]
     public class Activity1 : Activity
     {
+        private Button _btNoAlpha;
+        private Button _btAlpha;
+        private Button _btRound;
+        private ColorPickerPanelView _panelNoAlpha;
+        private ColorPickerPanelView _panelAlpha;
+        private ColorPickerPanelView _panelRound;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
-            var colorPicker = new ColorPickerDialog(this, Color.Azure);
-            colorPicker.ColorChanged += (sender, args) => Console.WriteLine("Color changed: {0}", args.Color);
+            SetContentView(Resource.Layout.Main);
 
-            var colorPickerAlpha = new ColorPickerDialog(this, Color.Aqua);
-            colorPickerAlpha.ColorChanged += (sender, args) => Console.WriteLine("Color changed: {0}", args.Color);
-            colorPickerAlpha.AlphaSliderVisible = true;
+            _btNoAlpha = FindViewById<Button>(Resource.Id.ButtonColorNoAlpha);
+            _btAlpha = FindViewById<Button>(Resource.Id.ButtonColorAlpha);
+            _btRound = FindViewById<Button>(Resource.Id.ButtonRoundColor);
 
-            var ll = new LinearLayout(this)
-                         {
-                             LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent,
-                                                                              ViewGroup.LayoutParams.FillParent)
-                         };
+            _btNoAlpha.Click += BtNoAlphaOnClick;
+            _btAlpha.Click += BtAlphaOnClick;
+            _btRound.Click += BtRoundOnClick;
 
-            var btColorPicker = new Button(this) { Text = "Show Color Picker" };
-            btColorPicker.Click += (sender, args) => colorPicker.Show();
+            _panelNoAlpha = FindViewById<ColorPickerPanelView>(Resource.Id.PanelColorNoAlpha);
+            _panelNoAlpha.Color = Color.Black;
+            _panelAlpha = FindViewById<ColorPickerPanelView>(Resource.Id.PanelColorAlpha);
+            _panelAlpha.Color = Color.Black;
+            _panelRound = FindViewById<ColorPickerPanelView>(Resource.Id.PanelRoundColor);
+            _panelRound.Color = Color.Black;
+        }
 
-            var btColorPickerAlpha = new Button(this) { Text = "Show Color Picker (Alpha)" };
-            btColorPickerAlpha.Click += (sender, args) => colorPickerAlpha.Show();
+        private void BtRoundOnClick(object sender, EventArgs eventArgs)
+        {
+            var roundColorPickerDialog = new RoundColorPickerDialog(this, _panelRound.Color);
+            roundColorPickerDialog.ColorChanged += (o, args) => _panelRound.Color = args.Color;
+            roundColorPickerDialog.Show();
+        }
 
-            ll.AddView(btColorPicker);
-            ll.AddView(btColorPickerAlpha);
-            SetContentView(ll);
+        private void BtAlphaOnClick(object sender, EventArgs eventArgs)
+        {
+            using (var colorPickerDialog = new ColorPickerDialog(this, _panelAlpha.Color))
+            {
+                colorPickerDialog.AlphaSliderVisible = true;
+                colorPickerDialog.ColorChanged += (o, args) => _panelAlpha.Color = args.Color;
+                colorPickerDialog.Show();
+            }
+        }
+
+        private void BtNoAlphaOnClick(object sender, EventArgs eventArgs)
+        {
+            using (var colorPickerDialog = new ColorPickerDialog(this, _panelNoAlpha.Color))
+            {
+                colorPickerDialog.ColorChanged += (o, args) => _panelNoAlpha.Color = args.Color;
+                colorPickerDialog.Show();
+            }
         }
     }
 }

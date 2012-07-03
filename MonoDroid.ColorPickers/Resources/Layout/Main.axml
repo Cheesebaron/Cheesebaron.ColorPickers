@@ -2,6 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
+    android:layout_height="fill_parent">
+    <Button
+        android:text="@string/button_color_picker_noalpha"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ButtonColorNoAlpha" />
+    <monodroid.colorpickers.ColorPickerPanelView
+        android:id="@+id/PanelColorNoAlpha"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
+    <Button
+        android:text="@string/button_color_picker_alpha"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ButtonColorAlpha" />
+    <monodroid.colorpickers.ColorPickerPanelView
+        android:id="@+id/PanelColorAlpha"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
+    <Button
+        android:text="@string/button_color_picker_round"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ButtonRoundColor" />
+    <monodroid.colorpickers.ColorPickerPanelView
+        android:id="@+id/PanelRoundColor"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
 </LinearLayout>

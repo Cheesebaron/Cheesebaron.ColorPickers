@@ -27,13 +27,6 @@ using Android.Views;
 
 namespace MonoDroid.ColorPickers
 {
-    public delegate void ColorChangedEventHandler(object sender, ColorEventArgs e);
-
-    public class ColorEventArgs : EventArgs
-    {
-        public Color Color { get; set; }
-    }
-
     public class ColorPickerView : View
     {
         #region Fields
@@ -160,7 +153,7 @@ namespace MonoDroid.ColorPickers
                 _val = hsv.V;
 
                 if (ColorChanged != null)
-                    ColorChanged(this, new ColorEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
+                    ColorChanged(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
 
                 Invalidate();
             }
@@ -326,13 +319,14 @@ namespace MonoDroid.ColorPickers
 
 		    var rgb = ColorUtils.ColorFromHSV(_hue/360f,1f,1f);
 
-		    _satShader = new LinearGradient(rect.Left, rect.Top, rect.Right, rect.Top,
-				    Color.Argb(255,255,255,255), rgb, Shader.TileMode.Clamp);
-		    var mShader = new ComposeShader(_valShader, _satShader, PorterDuff.Mode.Multiply);
-		    _satValPaint.SetShader(mShader);
+		    using (_satShader = new LinearGradient(rect.Left, rect.Top, rect.Right, rect.Top,
+				    Color.Argb(255,255,255,255), rgb, Shader.TileMode.Clamp))
+            {
+		        var mShader = new ComposeShader(_valShader, _satShader, PorterDuff.Mode.Multiply);
+		        _satValPaint.SetShader(mShader);
 
-		    canvas.DrawRect(rect, _satValPaint);
-
+		        canvas.DrawRect(rect, _satValPaint);
+            }
 		    var p = SatValToPoint(_sat, _val);
 
 		    _satValTrackerPaint.Color = Color.Argb(255,0,0,0);
@@ -432,13 +426,13 @@ namespace MonoDroid.ColorPickers
 		    var color = ColorUtils.ColorFromHSV(_hue/360f,_sat,_val);
             var acolor = ColorUtils.ColorFromHSV(_hue/360f, _sat, _val, 0);
 
-		    _alphaShader = new LinearGradient(rect.Left, rect.Top, rect.Right, rect.Top,
-				    color, acolor, Shader.TileMode.Clamp);
+		    using (_alphaShader = new LinearGradient(rect.Left, rect.Top, rect.Right, rect.Top,
+				    color, acolor, Shader.TileMode.Clamp))
+            {
+    		    _alphaPaint.SetShader(_alphaShader);
 
-
-		    _alphaPaint.SetShader(_alphaShader);
-
-            canvas.DrawRect(rect, _alphaPaint);
+                canvas.DrawRect(rect, _alphaPaint);
+            }
 
 		    if(!string.IsNullOrEmpty(_alphaSliderText)){
                 canvas.DrawText(_alphaSliderText, rect.CenterX(), rect.CenterY() + 4 * _density, _alphaTextPaint);
@@ -610,7 +604,7 @@ namespace MonoDroid.ColorPickers
 		    if(update)
             {
                 if (ColorChanged != null)
-                    ColorChanged(this, new ColorEventArgs { Color = ColorUtils.ColorFromHSV(_hue/360, _sat, _val, _alpha)});
+                    ColorChanged(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
 
 			    Invalidate();
 			    return true;
@@ -641,7 +635,7 @@ namespace MonoDroid.ColorPickers
 		    if(update)
             {
 			    if (ColorChanged != null)
-                    ColorChanged(this, new ColorEventArgs { Color = ColorUtils.ColorFromHSV(_hue/360, _sat, _val, _alpha)});
+                    ColorChanged(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
 
 			    Invalidate();
 			    return true;
@@ -839,6 +833,75 @@ namespace MonoDroid.ColorPickers
             }
 
             return height;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (null != _satValPaint)
+                {
+                    _satValPaint.Dispose();
+                    _satValPaint = null;
+                }
+                if (null != _satValTrackerPaint)
+                {
+                    _satValTrackerPaint.Dispose();
+                    _satValTrackerPaint = null;
+                }
+                if (null != _huePaint)
+                {
+                    _huePaint.Dispose();
+                    _huePaint = null;
+                }
+                if (null != _hueTrackerPaint)
+                {
+                    _hueTrackerPaint.Dispose();
+                    _hueTrackerPaint = null;
+                }
+                if (null != _alphaPaint)
+                {
+                    _alphaPaint.Dispose();
+                    _alphaPaint = null;
+                }
+                if (null != _alphaTextPaint)
+                {
+                    _alphaTextPaint.Dispose();
+                    _alphaTextPaint = null;
+                }
+                if (null != _hueShader)
+                {
+                    _hueShader.Dispose();
+                    _hueShader = null;
+                }
+                if (null != _borderPaint)
+                {
+                    _borderPaint.Dispose();
+                    _borderPaint = null;
+                }
+                if (null != _valShader)
+                {
+                    _valShader.Dispose();
+                    _valShader = null;
+                }
+                if (null != _satShader)
+                {
+                    _satShader.Dispose();
+                    _satShader = null;
+                }
+                if (null != _alphaShader)
+                {
+                    _alphaShader.Dispose();
+                    _alphaShader = null;
+                }
+                if (null != _alphaPattern)
+                {
+                    _alphaPattern.Dispose();
+                    _alphaPattern = null;
+                }
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

@@ -27,7 +27,7 @@ using Android.Views;
 
 namespace MonoDroid.ColorPickers
 {
-    public delegate void PanelClickedEventHandler(object sender, ColorEventArgs e);
+    public delegate void PanelClickedEventHandler(object sender, ColorChangedEventArgs e);
 
     class ColorPickerPanelView: View
     {
@@ -165,7 +165,7 @@ namespace MonoDroid.ColorPickers
             if (e.Action == MotionEventActions.Up || e.Action == MotionEventActions.Down)
             {
                 if (PanelClicked != null)
-                    PanelClicked(this, new ColorEventArgs{ Color = _color });
+                    PanelClicked(this, new ColorChangedEventArgs { Color = _color });
             }
 
             return base.OnTouchEvent(e);

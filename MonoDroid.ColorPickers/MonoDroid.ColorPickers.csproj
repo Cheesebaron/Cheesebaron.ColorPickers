@@ -48,12 +48,15 @@
   <ItemGroup>
     <Compile Include="Activity1.cs" />
     <Compile Include="AlphaPatternDrawable.cs" />
+    <Compile Include="ColorChangedEventArgs.cs" />
     <Compile Include="ColorPickerDialog.cs" />
     <Compile Include="ColorPickerPanelView.cs" />
     <Compile Include="ColorPickerView.cs" />
     <Compile Include="ColorUtils.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoundColorPickerDialog.cs" />
+    <Compile Include="RoundColorPickerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

@@ -94,7 +94,7 @@ namespace MonoDroid.ColorPickers
                                              {
                                                  _newColor.Color = args.Color;
                                                  if (ColorChanged != null)
-                                                     ColorChanged(this, new ColorEventArgs { Color = _newColor.Color });
+                                                     ColorChanged(this, new ColorChangedEventArgs { Color = _newColor.Color });
                                              };
             _oldColor.Color = color;
             _colorPicker.Color = color;
@@ -106,11 +106,11 @@ namespace MonoDroid.ColorPickers
             {
                 case Resource.Id.new_color_panel:
                     if (ColorChanged != null)
-                        ColorChanged(this, new ColorEventArgs { Color = _newColor.Color });
+                        ColorChanged(this, new ColorChangedEventArgs { Color = _newColor.Color });
                     break;
                 case Resource.Id.old_color_panel:
                     if (ColorChanged != null)
-                        ColorChanged(this, new ColorEventArgs { Color = _oldColor.Color });
+                        ColorChanged(this, new ColorChangedEventArgs { Color = _oldColor.Color });
                     break;
             }
             Dismiss();
