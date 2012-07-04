@@ -303,8 +303,8 @@ namespace MonoDroid.ColorPickers
             DrawAlphaPanel(canvas);
         }
 
-        private void DrawSatValPanel(Canvas canvas){
-
+        private void DrawSatValPanel(Canvas canvas)
+        {
 		    var rect = _satValRect;
 
 		    if(BorderWidthPx > 0){
@@ -334,7 +334,6 @@ namespace MonoDroid.ColorPickers
 
 		    _satValTrackerPaint.Color = Color.Argb(255, 221, 221, 221);
             canvas.DrawCircle(p.X, p.Y, _paletteCircleTrackerRadius, _satValTrackerPaint);    
-
 	    }
 
         private Point SatValToPoint(float sat, float val)
@@ -367,9 +366,9 @@ namespace MonoDroid.ColorPickers
 		    }
 
 		    if (_hueShader == null) {
-                _hueShader = 
-                    new LinearGradient(rect.Left, rect.Top, rect.Left, rect.Bottom, BuildHueColorArray(), null, Shader.TileMode.Clamp);
-                _huePaint.SetShader(_hueShader);
+                using(_hueShader = 
+                    new LinearGradient(rect.Left, rect.Top, rect.Left, rect.Bottom, BuildHueColorArray(), null, Shader.TileMode.Clamp))
+                    _huePaint.SetShader(_hueShader);
 		    }
 
 		    canvas.DrawRect(rect, _huePaint);
@@ -629,6 +628,7 @@ namespace MonoDroid.ColorPickers
                 case MotionEventActions.Up:
 			        _startTouchPoint = null;
 			        update = MoveTrackersIfNeeded(e);
+                    GC.Collect(); //Not sure if collecting too much here...
 			        break;
 		    }
 
@@ -900,6 +900,8 @@ namespace MonoDroid.ColorPickers
                     _alphaPattern = null;
                 }
             }
+
+            GC.Collect();
 
             base.Dispose(disposing);
         }

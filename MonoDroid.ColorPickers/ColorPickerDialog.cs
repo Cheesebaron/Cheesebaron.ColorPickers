@@ -113,6 +113,7 @@ namespace MonoDroid.ColorPickers
                         ColorChanged(this, new ColorChangedEventArgs { Color = _oldColor.Color });
                     break;
             }
+            GC.Collect();
             Dismiss();
         }
 

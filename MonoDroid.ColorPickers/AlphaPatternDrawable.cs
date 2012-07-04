@@ -81,27 +81,29 @@ namespace MonoDroid.ColorPickers
             }
 
             _bitmap = Bitmap.CreateBitmap(Bounds.Width(), Bounds.Height(), Bitmap.Config.Argb8888);
-            var canvas = new Canvas(_bitmap);
 
-            var r = new Rect();
-            var verticalStartWhite = true;
-            for (var i = 0; i <= _numRectanglesVertical; i++)
+            using (var canvas = new Canvas(_bitmap))
             {
-                var isWhite = verticalStartWhite;
-                for (var j = 0; j <= _numRectanglesHorizontal; j++)
+                var r = new Rect();
+                var verticalStartWhite = true;
+                for (var i = 0; i <= _numRectanglesVertical; i++)
                 {
+                    var isWhite = verticalStartWhite;
+                    for (var j = 0; j <= _numRectanglesHorizontal; j++)
+                    {
 
-                    r.Top = i * _rectangleSize;
-                    r.Left = j * _rectangleSize;
-                    r.Bottom = r.Top + _rectangleSize;
-                    r.Right = r.Left + _rectangleSize;
+                        r.Top = i * _rectangleSize;
+                        r.Left = j * _rectangleSize;
+                        r.Bottom = r.Top + _rectangleSize;
+                        r.Right = r.Left + _rectangleSize;
 
-                    canvas.DrawRect(r, isWhite ? _paintWhite : _paintGray);
+                        canvas.DrawRect(r, isWhite ? _paintWhite : _paintGray);
 
-                    isWhite = !isWhite;
+                        isWhite = !isWhite;
+                    }
+
+                    verticalStartWhite = !verticalStartWhite;
                 }
-
-                verticalStartWhite = !verticalStartWhite;
             }
         }
 

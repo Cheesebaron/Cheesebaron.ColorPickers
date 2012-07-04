@@ -40,12 +40,13 @@ namespace MonoDroid.ColorPickers
                 new Color(0,255,255,255).ToArgb(), new Color(0,255,0,255).ToArgb(), new Color(255,255,0,255).ToArgb(),
                 new Color(255,0,0,255).ToArgb()
             };
-            Shader s = new SweepGradient(0, 0, _colors, null);
-
-            _paint = new Paint(PaintFlags.AntiAlias);
-            _paint.SetShader(s);
-            _paint.SetStyle(Paint.Style.Stroke);
-            _paint.StrokeWidth = 32;
+            using (Shader s = new SweepGradient(0, 0, _colors, null))
+            {
+                _paint = new Paint(PaintFlags.AntiAlias);
+                _paint.SetShader(s);
+                _paint.SetStyle(Paint.Style.Stroke);
+                _paint.StrokeWidth = 32;
+            }
 
             _centerPaint = new Paint(PaintFlags.AntiAlias)
                             {
@@ -172,27 +173,11 @@ namespace MonoDroid.ColorPickers
                         }
                         _trackingCenter = false;    // so we draw w/o halo
                         Invalidate();
+                        GC.Collect();
                     }
                     break;
             }
             return true;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            /*if (disposing)
-            {
-                if (null != _paint)
-                {
-                    _paint.Dispose();
-                }
-                if (null != _centerPaint)
-                {
-                    _centerPaint.Dispose();
-                }
-            }*/
-
-            base.Dispose(disposing);
         }
     }
 }
