@@ -306,7 +306,10 @@ namespace MonoDroid.ColorPickers
         private void DrawSatValPanel(Canvas canvas)
         {
             #if __ANDROID_11__
-            RootView.SetLayerType(LayerType.Software, null);
+            if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Honeycomb)
+            {
+                RootView.SetLayerType(LayerType.Software, null);
+            }
             #endif
             
             var rect = _satValRect;
