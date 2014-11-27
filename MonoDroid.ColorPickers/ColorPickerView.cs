@@ -305,7 +305,14 @@ namespace MonoDroid.ColorPickers
 
         private void DrawSatValPanel(Canvas canvas)
         {
-		    var rect = _satValRect;
+            #if __ANDROID_11__
+            if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Honeycomb)
+            {
+                RootView.SetLayerType(LayerType.Software, null);
+            }
+            #endif
+            
+            var rect = _satValRect;
 
 		    if(BorderWidthPx > 0){
 			    _borderPaint.Color = _borderColor;
