@@ -123,5 +123,27 @@ namespace Cheesebaron.ColorPickers
         {
             get { return 0; }
         }
+
+        private bool _isDisposed;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+            {
+                _bitmap?.Recycle();
+                _bitmap?.Dispose();
+
+                _paint?.Dispose();
+                _paintGray?.Dispose();
+                _paintWhite?.Dispose();
+            }
+
+            _isDisposed = true;
+
+            base.Dispose(disposing);
+        }
     }
 }

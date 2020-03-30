@@ -23,7 +23,7 @@
     android:paddingRight="5dp"
     android:orientation="vertical">
 
-	<monodroid.colorpickers.ColorPickerView
+	<cheesebaron.colorpickers.ColorPickerView
 		android:id="@+id/color_picker_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
 		android:layout_below="@id/color_picker_view"
 		android:layout_marginBottom="10dp">
 
-		<monodroid.colorpickers.ColorPickerPanelView
+		<cheesebaron.colorpickers.ColorPickerPanelView
 			android:id="@+id/old_color_panel"
 			android:layout_width="0px"
 			android:layout_height="fill_parent"
@@ -66,7 +66,7 @@
 			android:layout_marginRight="10dp"
 			/>
 
-		<monodroid.colorpickers.ColorPickerPanelView
+		<cheesebaron.colorpickers.ColorPickerPanelView
 			android:id="@+id/new_color_panel"
 			android:layout_width="0px"
 			android:layout_height="wrap_content"

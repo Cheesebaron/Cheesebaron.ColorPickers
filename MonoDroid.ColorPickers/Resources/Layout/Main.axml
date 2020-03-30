@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ButtonColorNoAlpha" />
-    <monodroid.colorpickers.ColorPickerPanelView
+    <cheesebaron.colorpickers.ColorPickerPanelView
         android:id="@+id/PanelColorNoAlpha"
         android:layout_width="fill_parent"
         android:layout_height="50dp" />
@@ -17,7 +17,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ButtonColorAlpha" />
-    <monodroid.colorpickers.ColorPickerPanelView
+    <cheesebaron.colorpickers.ColorPickerPanelView
         android:id="@+id/PanelColorAlpha"
         android:layout_width="fill_parent"
         android:layout_height="50dp" />
@@ -26,7 +26,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ButtonRoundColor" />
-    <monodroid.colorpickers.ColorPickerPanelView
+    <cheesebaron.colorpickers.ColorPickerPanelView
         android:id="@+id/PanelRoundColor"
         android:layout_width="fill_parent"
         android:layout_height="50dp" />

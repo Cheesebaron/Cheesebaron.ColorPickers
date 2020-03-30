@@ -41,28 +41,24 @@ namespace Cheesebaron.ColorPickersSample
 
         private void BtRoundOnClick(object sender, EventArgs eventArgs)
         {
-            var roundColorPickerDialog = new RoundColorPickerDialog(this, _panelRound.Color);
+            var roundColorPickerDialog = new RoundColorPickerDialog(this, _panelRound.Color, "Pick Color");
             roundColorPickerDialog.ColorChanged += (o, args) => _panelRound.Color = args.Color;
             roundColorPickerDialog.Show();
         }
 
         private void BtAlphaOnClick(object sender, EventArgs eventArgs)
         {
-            using (var colorPickerDialog = new ColorPickerDialog(this, _panelAlpha.Color))
-            {
-                colorPickerDialog.AlphaSliderVisible = true;
-                colorPickerDialog.ColorChanged += (o, args) => _panelAlpha.Color = args.Color;
-                colorPickerDialog.Show();
-            }
+            var colorPickerDialog = new ColorPickerDialog(this, _panelAlpha.Color);
+            colorPickerDialog.AlphaSliderVisible = true;
+            colorPickerDialog.ColorChanged += (o, args) => _panelAlpha.Color = args.Color;
+            colorPickerDialog.Show();
         }
 
         private void BtNoAlphaOnClick(object sender, EventArgs eventArgs)
         {
-            using (var colorPickerDialog = new ColorPickerDialog(this, _panelNoAlpha.Color))
-            {
-                colorPickerDialog.ColorChanged += (o, args) => _panelNoAlpha.Color = args.Color;
-                colorPickerDialog.Show();
-            }
+            var colorPickerDialog = new ColorPickerDialog(this, _panelNoAlpha.Color);
+            colorPickerDialog.ColorChanged += (o, args) => _panelNoAlpha.Color = args.Color;
+            colorPickerDialog.Show();
         }
     }
 }

@@ -40,6 +40,8 @@ namespace Cheesebaron.ColorPickers
 	     */
 	    private const float	BorderWidthPx = 1;
 
+        private bool _isDisposed;
+
 	    private float _density = 1f;
 
 	    private Color _borderColor = Color.Argb(255,110,110,110);
@@ -81,8 +83,9 @@ namespace Cheesebaron.ColorPickers
 
         public Color Color
         {
-            get { return _color; }
-            set { 
+            get => _color;
+            set
+            {
                 _color = value;
                 Invalidate();
             }
@@ -90,7 +93,7 @@ namespace Cheesebaron.ColorPickers
 
         public Color BorderColor
         {
-            get { return _borderColor; }
+            get => _borderColor;
             set
             {
                 _borderColor = value;
@@ -100,6 +103,9 @@ namespace Cheesebaron.ColorPickers
 
         protected override void OnDraw(Canvas canvas)
         {
+            if (_isDisposed)
+                return;
+
             var rect = _colorRect;
 
             if (BorderWidthPx > 0)
@@ -131,17 +137,18 @@ namespace Cheesebaron.ColorPickers
             base.OnSizeChanged(w, h, oldw, oldh);
 
             _drawingRect = new RectF
-                               {
-                                   Left = PaddingLeft,
-                                   Right = w - PaddingRight,
-                                   Top = PaddingTop,
-                                   Bottom = h - PaddingBottom
-                               };
+            {
+                Left = PaddingLeft,
+                Right = w - PaddingRight,
+                Top = PaddingTop,
+                Bottom = h - PaddingBottom
+            };
 
             SetUpColorRect();
         }
 
-        private void SetUpColorRect(){
+        private void SetUpColorRect()
+        {
 		    var dRect = _drawingRect;
 
             var left = dRect.Left + BorderWidthPx;
@@ -163,13 +170,32 @@ namespace Cheesebaron.ColorPickers
 
         public override bool OnTouchEvent(MotionEvent e)
         {
-            if (e.Action == MotionEventActions.Up || e.Action == MotionEventActions.Down)
+            if (e.Action == MotionEventActions.Up)
             {
-                if (PanelClicked != null)
-                    PanelClicked(this, new ColorChangedEventArgs { Color = _color });
+                PanelClicked?.Invoke(this, new ColorChangedEventArgs { Color = _color });
             }
 
             return base.OnTouchEvent(e);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+            {
+                _borderPaint?.Dispose();
+                _colorPaint?.Dispose();
+                _drawingRect?.Dispose();
+                _colorRect?.Dispose();
+
+                _alphaPattern?.Dispose();
+            }
+
+            _isDisposed = true;
+
+            base.Dispose(disposing);
         }
     }
 }

@@ -33,21 +33,19 @@ namespace Cheesebaron.ColorPickers
     public class ColorPickerDialog: Dialog, View.IOnClickListener
     {
         public event ColorChangedEventHandler ColorChanged;
-
+        
+        private bool _isDisposed;
         private ColorPickerView _colorPicker;
 
         private ColorPickerPanelView _oldColor;
         private ColorPickerPanelView _newColor;
 
-        public Color Color
-        {
-            get { return _colorPicker.Color; }
-        }
+        public Color Color => _colorPicker.Color;
 
         public bool AlphaSliderVisible
         {
-            get { return _colorPicker.AlphaSliderVisible; }
-            set { _colorPicker.AlphaSliderVisible = value; }
+            get => _colorPicker.AlphaSliderVisible;
+            set => _colorPicker.AlphaSliderVisible = value;
         }
 
         protected ColorPickerDialog(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
@@ -70,7 +68,7 @@ namespace Cheesebaron.ColorPickers
 
         private void SetUp(Color color)
         {
-            var inflater = (LayoutInflater) Context.GetSystemService(Context.LayoutInflaterService);
+            var inflater = LayoutInflater.FromContext(Context);
 
 		    var layout = inflater.Inflate(Resource.Layout.dialog_color_picker, null);
 
@@ -89,32 +87,45 @@ namespace Cheesebaron.ColorPickers
 			    0
 		    );
 
-            _oldColor.SetOnClickListener(this);
-            _newColor.SetOnClickListener(this);
-            _colorPicker.ColorChanged += (sender, args) =>
-                                             {
-                                                 _newColor.Color = args.Color;
-                                                 if (ColorChanged != null)
-                                                     ColorChanged(this, new ColorChangedEventArgs { Color = _newColor.Color });
-                                             };
             _oldColor.Color = color;
             _colorPicker.Color = color;
+        }
+
+        public override void OnAttachedToWindow()
+        {
+            base.OnAttachedToWindow();
+
+            _oldColor.SetOnClickListener(this);
+            _newColor.SetOnClickListener(this);
+            _colorPicker.ColorChanged += OnColorChanged;
+        }
+
+        public override void OnDetachedFromWindow()
+        {
+            base.OnDetachedFromWindow();
+
+            _oldColor.SetOnClickListener(null);
+            _newColor.SetOnClickListener(null);
+            _colorPicker.ColorChanged -= OnColorChanged;
+        }
+
+        private void OnColorChanged(object sender, ColorChangedEventArgs args)
+        {
+            _newColor.Color = args.Color;
+            ColorChanged?.Invoke(this, new ColorChangedEventArgs { Color = _newColor.Color });
         }
 
         public void OnClick(View v)
         {
             if (v.Id == Resource.Id.new_color_panel)
             {
-                if (ColorChanged != null)
-                    ColorChanged(this, new ColorChangedEventArgs { Color = _newColor.Color });
+                ColorChanged?.Invoke(this, new ColorChangedEventArgs { Color = _newColor.Color });
             }
             else if (v.Id == Resource.Id.old_color_panel)
             {
-                if (ColorChanged != null)
-                    ColorChanged(this, new ColorChangedEventArgs { Color = _oldColor.Color });
+                ColorChanged?.Invoke(this, new ColorChangedEventArgs { Color = _oldColor.Color });
             }
 
-            GC.Collect();
             Dismiss();
         }
 
@@ -131,6 +142,37 @@ namespace Cheesebaron.ColorPickers
             _oldColor.Color = new Color(savedInstanceState.GetInt("old_color"));
             _colorPicker.Color = new Color(savedInstanceState.GetInt("new_color"));
             base.OnRestoreInstanceState(savedInstanceState);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+            {
+                if (_colorPicker != null)
+                {
+                    _colorPicker.ColorChanged -= OnColorChanged;
+                    _colorPicker.Dispose();
+                }
+                
+                if (_oldColor != null)
+                {
+                    _oldColor.SetOnClickListener(null);
+                    _oldColor.Dispose();
+                }
+                
+                if (_newColor != null)
+                {
+                    _newColor.SetOnClickListener(null);
+                    _newColor.Dispose();
+                }
+            }
+
+            _isDisposed = true;
+
+            base.Dispose(disposing);
         }
     }
 }

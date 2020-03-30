@@ -37,6 +37,8 @@ namespace Cheesebaron.ColorPickers
         private const int PanelHue = 1;
         private const int PanelAlpha = 2;
 
+        private bool _isDisposed;
+
         /**
          * The width in pixels of the border
          * surrounding all color panels.
@@ -90,10 +92,11 @@ namespace Cheesebaron.ColorPickers
         private float _sat;
         private float _val;
 
-        private String _alphaSliderText = "";
         private Color _sliderTrackerColor = Color.Argb(255, 28, 28, 28);
         private Color _borderColor = Color.Argb(255, 110, 110, 100);
         private bool _showAlphaPanel;
+
+        private string _alphaSliderText;
 
         /*
          * To remember which panel that has the "focus" when
@@ -125,9 +128,19 @@ namespace Cheesebaron.ColorPickers
 
         #region Props
 
+        public string AlphaSliderText
+        {
+            get => _alphaSliderText;
+            set
+            {
+                _alphaSliderText = value;
+                Invalidate();
+            }
+        }
+
         public Color BorderColor
         {
-            get { return _borderColor; }
+            get => _borderColor;
             set
             {
                 _borderColor = value;
@@ -137,7 +150,7 @@ namespace Cheesebaron.ColorPickers
 
         public Color Color
         {
-            get { return ColorUtils.ColorFromHSV(_hue/360f, _sat, _val, _alpha); }
+            get => ColorUtils.ColorFromHSV(_hue / 360f, _sat, _val, _alpha);
             set
             {
                 var color = value;
@@ -153,22 +166,15 @@ namespace Cheesebaron.ColorPickers
                 _sat = hsv.S;
                 _val = hsv.V;
 
-                if (ColorChanged != null)
-                    ColorChanged(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
+                ColorChanged?.Invoke(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
 
                 Invalidate();
             }
         }
 
-        public string AlphaSliderText
-        {
-            get { return _alphaSliderText; } 
-            set { _alphaSliderText = value; }
-        }
-
         public Color SliderTrackerColor
         {
-            get { return _sliderTrackerColor;  }
+            get => _sliderTrackerColor;
             set
             {
                 _sliderTrackerColor = value;
@@ -181,7 +187,7 @@ namespace Cheesebaron.ColorPickers
 
         public bool AlphaSliderVisible
         {
-            get { return _showAlphaPanel; }
+            get => _showAlphaPanel;
             set
             {
                 if (_showAlphaPanel != value)
@@ -315,12 +321,14 @@ namespace Cheesebaron.ColorPickers
             
             var rect = _satValRect;
 
-		    if(BorderWidthPx > 0){
+		    if (BorderWidthPx > 0)
+            {
 			    _borderPaint.Color = _borderColor;
                 canvas.DrawRect(_drawingRect.Left, _drawingRect.Top, rect.Right + BorderWidthPx, rect.Bottom + BorderWidthPx, _borderPaint);
 		    }
 
-		    if (_valShader == null) {
+		    if (_valShader == null)
+            {
                 _valShader = new LinearGradient(rect.Left, rect.Top, rect.Left, rect.Bottom,
 					    Color.Argb(255,255,255,255), Color.Argb(255,0,0,0), Shader.TileMode.Clamp);
 		    }
@@ -351,10 +359,10 @@ namespace Cheesebaron.ColorPickers
 		    var width = rect.Width();
 
             var p = new Point
-                        {
-                            X = (int) (sat*width + rect.Left), 
-                            Y = (int) ((1f - val)*height + rect.Top)
-                        };
+            {
+                X = (int) (sat*width + rect.Left), 
+                Y = (int) ((1f - val)*height + rect.Top)
+            };
 
             return p;
 	    }
@@ -373,7 +381,8 @@ namespace Cheesebaron.ColorPickers
 					    _borderPaint);
 		    }
 
-		    if (_hueShader == null) {
+		    if (_hueShader == null)
+            {
                 using(_hueShader = 
                     new LinearGradient(rect.Left, rect.Top, rect.Left, rect.Bottom, BuildHueColorArray(), null, Shader.TileMode.Clamp))
                     _huePaint.SetShader(_hueShader);
@@ -386,12 +395,12 @@ namespace Cheesebaron.ColorPickers
 		    var p = HueToPoint(_hue);
 
             var r = new RectF
-                        {
-                            Left = rect.Left - _rectangleTrackerOffset,
-                            Right = rect.Right + _rectangleTrackerOffset,
-                            Top = p.Y - rectHeight,
-                            Bottom = p.Y + rectHeight
-                        };
+            {
+                Left = rect.Left - _rectangleTrackerOffset,
+                Right = rect.Right + _rectangleTrackerOffset,
+                Top = p.Y - rectHeight,
+                Bottom = p.Y + rectHeight
+            };
 
             canvas.DrawRoundRect(r, 2, 2, _hueTrackerPaint);
 	    }
@@ -402,18 +411,18 @@ namespace Cheesebaron.ColorPickers
 		    var height = rect.Height();
 
             var p = new Point
-                        {
-                            Y = (int) (height - (hue*height/360f) + rect.Top), 
-                            X = (int) rect.Left
-                        };
-
+            {
+                Y = (int) (height - (hue*height/360f) + rect.Top), 
+                X = (int) rect.Left
+            };
 
             return p;
 	    }
 
-        private void DrawAlphaPanel(Canvas canvas){
+        private void DrawAlphaPanel(Canvas canvas)
+        {
 
-		    if(!_showAlphaPanel || _alphaRect == null || _alphaPattern == null) return;
+		    if (!_showAlphaPanel || _alphaRect == null || _alphaPattern == null) return;
 
 		    var rect = _alphaRect;
 
@@ -426,7 +435,6 @@ namespace Cheesebaron.ColorPickers
                         rect.Bottom + BorderWidthPx,
 					    _borderPaint);
 		    }
-
 
 		    _alphaPattern.Draw(canvas);
 
@@ -441,7 +449,8 @@ namespace Cheesebaron.ColorPickers
                 canvas.DrawRect(rect, _alphaPaint);
             }
 
-		    if(!string.IsNullOrEmpty(_alphaSliderText)){
+		    if (!string.IsNullOrEmpty(_alphaSliderText))
+            {
                 canvas.DrawText(_alphaSliderText, rect.CenterX(), rect.CenterY() + 4 * _density, _alphaTextPaint);
 		    }
 
@@ -450,12 +459,12 @@ namespace Cheesebaron.ColorPickers
 		    var p = AlphaToPoint(_alpha);
 
             var r = new RectF
-                        {
-                            Left = p.X - rectWidth,
-                            Right = p.X + rectWidth,
-                            Top = rect.Top - _rectangleTrackerOffset,
-                            Bottom = rect.Bottom + _rectangleTrackerOffset
-                        };
+            {
+                Left = p.X - rectWidth,
+                Right = p.X + rectWidth,
+                Top = rect.Top - _rectangleTrackerOffset,
+                Bottom = rect.Bottom + _rectangleTrackerOffset
+            };
 
             canvas.DrawRoundRect(r, 2, 2, _hueTrackerPaint);
 
@@ -467,10 +476,10 @@ namespace Cheesebaron.ColorPickers
 		    var width = rect.Width();
 
             var p = new Point
-                        {
-                            X = (int) (width - (alpha*width/0xff) + rect.Left), 
-                            Y = (int) rect.Top
-                        };
+            {
+                X = (int) (width - (alpha*width/0xff) + rect.Left), 
+                Y = (int) rect.Top
+            };
 
             return p;
 	    }
@@ -480,12 +489,12 @@ namespace Cheesebaron.ColorPickers
             base.OnSizeChanged(w, h, oldw, oldh);
 
             _drawingRect = new RectF
-                               {
-                                   Left = DrawingOffset + PaddingLeft,
-                                   Right = w - DrawingOffset - PaddingRight,
-                                   Top = DrawingOffset + PaddingTop,
-                                   Bottom = h - DrawingOffset - PaddingBottom
-                               };
+            {
+                Left = DrawingOffset + PaddingLeft,
+                Right = w - DrawingOffset - PaddingRight,
+                Top = DrawingOffset + PaddingTop,
+                Bottom = h - DrawingOffset - PaddingBottom
+            };
 
             SetUpSatValRect();
             SetUpHueRect();
@@ -497,7 +506,8 @@ namespace Cheesebaron.ColorPickers
 		    var dRect = _drawingRect;
             var panelSide = dRect.Height() - BorderWidthPx * 2;
 
-		    if(_showAlphaPanel){
+		    if(_showAlphaPanel)
+            {
 			    panelSide -= _panelSpacing + _alphaPanelHeight;
 		    }
 
@@ -551,7 +561,8 @@ namespace Cheesebaron.ColorPickers
 		    var update = false;
 
 
-		    if(e.Action == MotionEventActions.Move){
+		    if (e.Action == MotionEventActions.Move)
+            {
 
 			    switch(_lastTouchedPanel)
                 {
@@ -608,12 +619,11 @@ namespace Cheesebaron.ColorPickers
 			    }
 		    }
 
-		    if(update)
+		    if (update)
             {
-                if (ColorChanged != null)
-                    ColorChanged(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
+                ColorChanged?.Invoke(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
 
-			    Invalidate();
+                Invalidate();
 			    return true;
 		    }
 
@@ -636,16 +646,14 @@ namespace Cheesebaron.ColorPickers
                 case MotionEventActions.Up:
 			        _startTouchPoint = null;
 			        update = MoveTrackersIfNeeded(e);
-                    GC.Collect(); //Not sure if collecting too much here...
 			        break;
 		    }
 
-		    if(update)
+		    if (update)
             {
-			    if (ColorChanged != null)
-                    ColorChanged(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
+                ColorChanged?.Invoke(this, new ColorChangedEventArgs { Color = ColorUtils.ColorFromHSV(_hue / 360, _sat, _val, _alpha) });
 
-			    Invalidate();
+                Invalidate();
 			    return true;
 		    }
             return base.OnTouchEvent(e);
@@ -845,71 +853,26 @@ namespace Cheesebaron.ColorPickers
 
         protected override void Dispose(bool disposing)
         {
+            if (_isDisposed)
+                return;
+
             if (disposing)
             {
-                if (null != _satValPaint)
-                {
-                    _satValPaint.Dispose();
-                    _satValPaint = null;
-                }
-                if (null != _satValTrackerPaint)
-                {
-                    _satValTrackerPaint.Dispose();
-                    _satValTrackerPaint = null;
-                }
-                if (null != _huePaint)
-                {
-                    _huePaint.Dispose();
-                    _huePaint = null;
-                }
-                if (null != _hueTrackerPaint)
-                {
-                    _hueTrackerPaint.Dispose();
-                    _hueTrackerPaint = null;
-                }
-                if (null != _alphaPaint)
-                {
-                    _alphaPaint.Dispose();
-                    _alphaPaint = null;
-                }
-                if (null != _alphaTextPaint)
-                {
-                    _alphaTextPaint.Dispose();
-                    _alphaTextPaint = null;
-                }
-                if (null != _hueShader)
-                {
-                    _hueShader.Dispose();
-                    _hueShader = null;
-                }
-                if (null != _borderPaint)
-                {
-                    _borderPaint.Dispose();
-                    _borderPaint = null;
-                }
-                if (null != _valShader)
-                {
-                    _valShader.Dispose();
-                    _valShader = null;
-                }
-                if (null != _satShader)
-                {
-                    _satShader.Dispose();
-                    _satShader = null;
-                }
-                if (null != _alphaShader)
-                {
-                    _alphaShader.Dispose();
-                    _alphaShader = null;
-                }
-                if (null != _alphaPattern)
-                {
-                    _alphaPattern.Dispose();
-                    _alphaPattern = null;
-                }
+                _satValPaint?.Dispose();
+                _satValTrackerPaint?.Dispose();
+                _huePaint?.Dispose();
+                _hueTrackerPaint?.Dispose();
+                _alphaPaint?.Dispose();
+                _alphaTextPaint?.Dispose();
+                _hueShader?.Dispose();
+                _borderPaint?.Dispose();
+                _valShader?.Dispose();
+                _satShader?.Dispose();
+                _alphaShader?.Dispose();
+                _alphaPattern?.Dispose();
             }
 
-            GC.Collect();
+            _isDisposed = true;
 
             base.Dispose(disposing);
         }

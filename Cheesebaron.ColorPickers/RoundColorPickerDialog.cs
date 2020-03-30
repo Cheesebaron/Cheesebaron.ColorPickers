@@ -23,6 +23,7 @@ using Android.Content;
 using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
+using Android.Views;
 
 namespace Cheesebaron.ColorPickers
 {
@@ -30,12 +31,18 @@ namespace Cheesebaron.ColorPickers
     public class RoundColorPickerDialog : Dialog
     {
         public event ColorChangedEventHandler ColorChanged;
-        private static Color _initialColor;
 
-        public RoundColorPickerDialog(Context context, Color initialColor)
+        private readonly string _title;
+
+        private bool _isDisposed;
+        private static Color _initialColor;
+        private RoundColorPickerView _pickerView;
+
+        public RoundColorPickerDialog(Context context, Color initialColor, string title)
             : base(context)
         {
             _initialColor = initialColor;
+            _title = title;
         }
 
         protected RoundColorPickerDialog(IntPtr javaReference, JniHandleOwnership transfer)
@@ -47,16 +54,50 @@ namespace Cheesebaron.ColorPickers
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            var cPickerView = new RoundColorPickerView(Context, _initialColor);
-            cPickerView.ColorChanged += delegate(object sender, ColorChangedEventArgs args)
-                                        {
-                                            if (ColorChanged != null)
-                                                ColorChanged(this, args);
+            _pickerView = new RoundColorPickerView(Context, _initialColor);
+            
+            SetContentView(_pickerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent));
+            SetTitle(_title);
+        }
 
-                                            Dismiss();
-                                        };
-            SetContentView(cPickerView);
-            SetTitle("Pick a Color");
+        private void OnColorChanged(object sender, ColorChangedEventArgs args)
+        {
+            ColorChanged?.Invoke(this, args);
+
+            Dismiss();
+        }
+
+        public override void OnAttachedToWindow()
+        {
+            base.OnAttachedToWindow();
+
+            _pickerView.ColorChanged += OnColorChanged;
+        }
+
+        public override void OnDetachedFromWindow()
+        {
+            base.OnDetachedFromWindow();
+            
+            _pickerView.ColorChanged -= OnColorChanged;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+            {
+                if (_pickerView != null)
+                {
+                    _pickerView.ColorChanged -= OnColorChanged;
+                    _pickerView.Dispose();
+                }
+            }
+
+            _isDisposed = true;
+
+            base.Dispose(disposing);
         }
     }
 }

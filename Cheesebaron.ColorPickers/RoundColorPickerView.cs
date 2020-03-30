@@ -29,10 +29,19 @@ namespace Cheesebaron.ColorPickers
     [Register("cheesebaron.colorpickers.RoundColorPickerView")]
     public class RoundColorPickerView : View
     {
+        private const int CenterX = 100;
+        private const int CenterY = 100;
+        private const int CenterRadius = 32;
+        private const float Pi = 3.1415926f;
+
         public event ColorChangedEventHandler ColorChanged;
         private readonly Paint _paint;
         private readonly Paint _centerPaint;
         private readonly int[] _colors;
+
+        private bool _trackingCenter;
+        private bool _highlightCenter;
+        private bool _isDisposed;
 
         public RoundColorPickerView(Context c, Color color)
             : base(c)
@@ -42,6 +51,7 @@ namespace Cheesebaron.ColorPickers
                 new Color(0,255,255,255).ToArgb(), new Color(0,255,0,255).ToArgb(), new Color(255,255,0,255).ToArgb(),
                 new Color(255,0,0,255).ToArgb()
             };
+
             using (Shader s = new SweepGradient(0, 0, _colors, null))
             {
                 _paint = new Paint(PaintFlags.AntiAlias);
@@ -51,17 +61,17 @@ namespace Cheesebaron.ColorPickers
             }
 
             _centerPaint = new Paint(PaintFlags.AntiAlias)
-                            {
-                                Color = color,
-                                StrokeWidth = 5
-                            };
+            {
+                Color = color,
+                StrokeWidth = 5
+            };
         }
-
-        private bool _trackingCenter;
-        private bool _highlightCenter;
 
         protected override void OnDraw(Canvas canvas)
         {
+            if (_isDisposed)
+                return;
+
             var r = CenterX - _paint.StrokeWidth * 0.5f;
 
             canvas.Translate(CenterX, CenterX);
@@ -89,10 +99,6 @@ namespace Cheesebaron.ColorPickers
         {
             SetMeasuredDimension(CenterX * 2, CenterY * 2);
         }
-
-        private const int CenterX = 100;
-        private const int CenterY = 100;
-        private const int CenterRadius = 32;
 
         private static int Ave(int s, int d, float p)
         {
@@ -125,10 +131,11 @@ namespace Cheesebaron.ColorPickers
             return Color.Argb(a, r, g, b);
         }
 
-        private const float Pi = 3.1415926f;
-
         public override bool OnTouchEvent(MotionEvent e)
         {
+            if (_isDisposed)
+                return false;
+
             float x = e.GetX() - CenterX;
             float y = e.GetY() - CenterY;
             bool inCenter = Math.Sqrt(x * x + y * y) <= CenterRadius;
@@ -170,16 +177,30 @@ namespace Cheesebaron.ColorPickers
                     {
                         if (inCenter)
                         {
-                            if (null != ColorChanged)
-                                ColorChanged(this, new ColorChangedEventArgs { Color = _centerPaint.Color });
+                            ColorChanged?.Invoke(this, new ColorChangedEventArgs { Color = _centerPaint.Color });
                         }
                         _trackingCenter = false;    // so we draw w/o halo
                         Invalidate();
-                        GC.Collect();
                     }
                     break;
             }
             return true;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+            {
+                _paint?.Dispose();
+                _centerPaint?.Dispose();
+            }
+
+            _isDisposed = true;
+
+            base.Dispose(disposing);
         }
     }
 }
