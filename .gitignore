@@ -8,3 +8,4 @@ TestResults
 # ReSharper
 _ReSharper.*
 .vs
+*.suo
