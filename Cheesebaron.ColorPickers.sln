@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "MonoDroid.ColorPickers\Sample.csproj", "{4FBCBB3F-498C-484A-B043-EDC7FD98FE1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{4FBCBB3F-498C-484A-B043-EDC7FD98FE1E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheesebaron.ColorPickers", "Cheesebaron.ColorPickers\Cheesebaron.ColorPickers.csproj", "{26C3C35B-DF6B-4164-A72C-316F23195036}"
 EndProject

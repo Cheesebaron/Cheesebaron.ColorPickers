@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <Copyright>Copyright (c) Tomasz Cielecki</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Cheesebaron/Cheesebaron.ColorPickers</PackageProjectUrl>
+    <PackageIconUrl>http://i.imgur.com/V3983YY.png</PackageIconUrl>
+    <Authors>Cheesebaron</Authors>
+    <Owners>Cheesebaron</Owners>
+    <PackageTags>Xamarin, Android, Color Pickers, Color, Picker</PackageTags>
+    <PackageReleaseNotes>https://github.com/Cheesebaron/Cheesebaron.ColorPickers/releases</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryUrl>https://github.com/Cheesebaron/Cheesebaron.ColorPickers</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Product>$(AssemblyName) ($(TargetFramework))</Product>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Version>0.1.0</Version>
+
+    <LangVersion>latest</LangVersion>
+    <NoWarn>$(NoWarn);1591;1701;1702;1705;VSX1000;NU1603</NoWarn>
+
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
