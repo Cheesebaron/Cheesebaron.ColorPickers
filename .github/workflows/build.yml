@@ -27,4 +27,4 @@ jobs:
       run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json -n true
 
     - name: Publish NuGet Package (GitHub)
-      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/cheesebaron/index.json -n true
+      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/Cheesebaron/index.json -n true
