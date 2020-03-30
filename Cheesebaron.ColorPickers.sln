@@ -5,7 +5,14 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{4FBCBB3F-498C-484A-B043-EDC7FD98FE1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheesebaron.ColorPickers", "Cheesebaron.ColorPickers\Cheesebaron.ColorPickers.csproj", "{26C3C35B-DF6B-4164-A72C-316F23195036}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheesebaron.ColorPickers", "Cheesebaron.ColorPickers\Cheesebaron.ColorPickers.csproj", "{26C3C35B-DF6B-4164-A72C-316F23195036}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{22982E15-3B42-46BC-8421-59D3CD13A558}"
+	ProjectSection(SolutionItems) = preProject
+		build.cake = build.cake
+		Directory.Build.props = Directory.Build.props
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
