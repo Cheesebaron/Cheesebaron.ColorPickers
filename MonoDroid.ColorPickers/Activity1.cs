@@ -3,8 +3,9 @@ using Android.App;
 using Android.Graphics;
 using Android.Widget;
 using Android.OS;
+using Cheesebaron.ColorPickers;
 
-namespace MonoDroid.ColorPickers
+namespace Cheesebaron.ColorPickersSample
 {
     [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@drawable/icon")]
     public class Activity1 : Activity
